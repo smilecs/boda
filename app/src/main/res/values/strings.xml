@@ -3,4 +3,8 @@
     <string name="origin_text_title">Select your origin airport</string>
     <string name="destination_text_title">Select your destination airport</string>
     <string name="selected_airport">$1s% - ($2s%)</string>
+    <string name="lang">en</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
