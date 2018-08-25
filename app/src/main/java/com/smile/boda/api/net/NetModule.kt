@@ -21,11 +21,11 @@ object NetModule {
         client.addNetworkInterceptor(CacheInterceptor())
         client.addInterceptor { chain ->
             val request = chain.request().newBuilder()
-            request.addHeader("Content-Type", "application/json")
             PrefUtil.getToken()?.let {
-                request.addHeader("Authorization", "Bearer$it")
+                request.addHeader("Content-Type", "application/json")
+                request.addHeader("Accept", "application/json")
+                request.addHeader("Authorization", "Bearer $it")
             }
-            request.addHeader("Accept", "application/json")
             chain.proceed(request.build())
         }
 

@@ -18,7 +18,7 @@ class MainViewModel : ViewModel() {
         return AuthRequest().doRequest()
     }
 
-    fun getAirports(offset: Int) {
+    fun getAirports(offset: Int = 0) {
         AirportRequest(offset).executeRequest(airportLiveData)
     }
 

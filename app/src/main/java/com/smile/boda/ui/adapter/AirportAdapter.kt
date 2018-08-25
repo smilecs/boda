@@ -8,6 +8,7 @@ import android.widget.TextView
 import com.smile.boda.App
 import com.smile.boda.R
 import com.smile.boda.model.AirportModel
+import com.smile.boda.ui.util.Util
 import kotlinx.android.synthetic.main.airport_list_item.view.*
 
 class AirportAdapter(val airports: List<AirportModel.Airport>, val selector: AirportSelector) : RecyclerView.Adapter<AirportAdapter.ViewHolder>() {
@@ -22,15 +23,15 @@ class AirportAdapter(val airports: List<AirportModel.Airport>, val selector: Air
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val model = airports[position]
         holder.airPortCode.text = model.cityCode
-        holder.cityName.text = model.names.name.find {
-            it.languageCode == App.getsInstance().getString(R.string.lang)
-        }?.langToken
+        val name = model.names["Name"]
+        holder.cityName.text = Util.getTextFromAny(name)
         holder.view.tag = model
     }
 
     class ViewHolder(val view: View, val selector: AirportSelector) : RecyclerView.ViewHolder(view) {
-        val cityName:TextView = view.cityName
-        val airPortCode:TextView = view.airportCode
+        val cityName: TextView = view.cityName
+        val airPortCode: TextView = view.airportCode
+
         init {
             view.setOnClickListener {
                 selector.onAirportSelected(it.tag as AirportModel.Airport)
@@ -39,7 +40,7 @@ class AirportAdapter(val airports: List<AirportModel.Airport>, val selector: Air
     }
 
     companion object {
-        interface AirportSelector{
+        interface AirportSelector {
             fun onAirportSelected(airport: AirportModel.Airport)
         }
     }

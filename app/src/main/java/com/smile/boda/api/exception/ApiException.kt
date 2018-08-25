@@ -7,7 +7,7 @@ class ApiException : ApiErrorHandler(){
     override fun getExceptionType(response: Response<*>): Exception {
         return when (response.code()) {
             LOGIN_ERROR -> LoginException()
-            else -> Exception()
+            else -> Exception("Unknown error")
         }
     }
 

@@ -1,14 +1,17 @@
 package com.smile.boda.ui.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.past3.ketro.api.Kobserver
+import com.smile.boda.PrefUtil
 import com.smile.boda.R
 import com.smile.boda.api.response.AirportResp
 import com.smile.boda.model.AirportModel
@@ -18,24 +21,32 @@ import com.smile.boda.ui.util.EndlessRecyclerViewScrollListener
 import kotlinx.android.synthetic.main.airport_list.*
 import kotlin.properties.Delegates
 
-class AirportListFragment : Fragment(), AirportAdapter.Companion.AirportSelector {
+class AirportListFragment : AuthFragment(), AirportAdapter.Companion.AirportSelector {
     var airportAdapter: AirportAdapter by Delegates.notNull()
+
+    companion object {
+        const val AIRPORT_DATA = "airport_data"
+    }
+
+    var mainViewModel: MainViewModel by Delegates.notNull()
 
     var count: Int? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.airport_list, container)
+        return inflater.inflate(R.layout.airport_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         initUi(mainViewModel)
         observeListData(mainViewModel)
+        getData(mainViewModel)
     }
 
     override fun onAirportSelected(airport: AirportModel.Airport) {
-
+        activity?.setResult(Activity.RESULT_OK, Intent().putExtra(AIRPORT_DATA, airport))
+        activity?.finish()
     }
 
     private fun initUi(mainViewModel: MainViewModel) {
@@ -66,4 +77,17 @@ class AirportListFragment : Fragment(), AirportAdapter.Companion.AirportSelector
                     airportAdapter.notifyDataSetChanged()
                 }
             })
+
+    private fun getData(mainViewModel: MainViewModel) {
+        if (PrefUtil.getToken() == null) {
+            authUser(mainViewModel)
+        } else {
+            mainViewModel.getAirports()
+        }
+    }
+
+    override fun onAuth() {
+        super.onAuth()
+        mainViewModel.getAirports()
+    }
 }

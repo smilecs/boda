@@ -6,6 +6,7 @@ import kotlin.properties.Delegates
 
 object PrefUtil {
     private const val token = "token"
+    private const val expiry = "expiry"
     var props: SharedPreferences by Delegates.notNull()
 
     init {
@@ -17,5 +18,13 @@ object PrefUtil {
     fun setToken(tokenString: String) {
         props.edit().putString(token, tokenString).apply()
     }
+
+    fun clearTokens() = props.edit().clear().apply()
+
+    fun setExpiry(expiryTime:Long){
+        props.edit().putLong(expiry, expiryTime).apply()
+    }
+
+    fun getExpiry() = props.getLong(expiry, 0)
 
 }

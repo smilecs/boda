@@ -9,10 +9,10 @@ import com.smile.boda.api.response.AirportResp
 import retrofit2.Call
 
 class AirportRequest(val offset: Int) : GenericRequestHandler<AirportResp>() {
-    private val limit = 100
+    private val limit = 2
 
     override fun makeRequest(): Call<AirportResp> {
-        return NetModule.provideRetrofit().create(BodaService::class.java).getAirports(limit, offset)
+        return NetModule.provideRetrofit().create(BodaService::class.java).getAirports(limit, 77)
     }
 
     override val errorHandler: ApiErrorHandler = ApiException()

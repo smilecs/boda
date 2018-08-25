@@ -8,6 +8,7 @@ import retrofit2.http.*
 
 interface BodaService {
 
+    @Headers("Content-Type: application/x-www-form-urlencoded")
     @FormUrlEncoded
     @POST(Urls.OAUTH)
     fun authenticate(@Field("client_id") clientId: String,
