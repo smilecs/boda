@@ -1,6 +1,7 @@
-package com.smile.boda.net
+package com.smile.boda.api.net
 
-import com.smile.boda.Application
+import com.smile.boda.App
+import com.smile.boda.PrefUtil
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
@@ -9,10 +10,10 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
 
-object NetModule{
+object NetModule {
     private fun provideOkhttpClient(): OkHttpClient {
         val cacheSize = 10 * 1024 * 1024
-        val cache = Cache(Application.getsInstance().cacheDir, cacheSize.toLong())
+        val cache = Cache(App.getsInstance().cacheDir, cacheSize.toLong())
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         val client = OkHttpClient.Builder()
@@ -21,8 +22,13 @@ object NetModule{
         client.addInterceptor { chain ->
             val request = chain.request().newBuilder()
             request.addHeader("Content-Type", "application/json")
+            PrefUtil.getToken()?.let {
+                request.addHeader("Authorization", "Bearer$it")
+            }
+            request.addHeader("Accept", "application/json")
             chain.proceed(request.build())
         }
+
         client.connectTimeout(20, TimeUnit.SECONDS)
         client.readTimeout(30, TimeUnit.SECONDS)
         client.writeTimeout(30, TimeUnit.SECONDS)

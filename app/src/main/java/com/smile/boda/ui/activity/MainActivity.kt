@@ -1,7 +1,8 @@
-package com.smile.boda
+package com.smile.boda.ui.activity
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.smile.boda.R
 
 class MainActivity : AppCompatActivity() {
 

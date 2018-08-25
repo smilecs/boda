@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="client_id">pmbzv5hagurxhnar7tepzq2d</string>
+    <string name="client_secret">eaNg37pVGx</string>
+    <string name="bearer">client_credentials</string>
+</resources>
