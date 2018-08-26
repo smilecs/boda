@@ -1,8 +1,11 @@
 package com.smile.boda.model
 
-import com.squareup.moshi.Json
+import com.google.gson.annotations.JsonAdapter
+import com.google.gson.annotations.SerializedName
+import com.smile.boda.api.response.AlwaysListJsonAdapater
 
-data class Schedule(@Json(name = "TotalJourney")
+data class Schedule(@SerializedName(value = "TotalJourney")
                     val totalJourney: TotalJourney,
-                    @Json(name = "Flight")
+                    @SerializedName(value = "Flight")
+                    @JsonAdapter(AlwaysListJsonAdapater::class)
                     val flight: List<Flight>)

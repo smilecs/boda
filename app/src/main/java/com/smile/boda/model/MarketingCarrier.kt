@@ -1,8 +1,8 @@
 package com.smile.boda.model
 
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
 
-data class MarketingCarrier(@Json(name = "AirlineID")
+data class MarketingCarrier(@SerializedName(value = "AirlineID")
                             val airlineID: String,
-                            @Json(name = "FlightNumber")
-                            val flightNumber: Integer)
+                            @SerializedName(value = "FlightNumber")
+                            val flightNumber: Int)

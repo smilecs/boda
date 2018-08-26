@@ -1,30 +1,31 @@
 package com.smile.boda.model
 
 import android.os.Parcelable
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 import kotlinx.android.parcel.RawValue
 
 object AirportModel {
     @Parcelize
     data class Airport(
-            @Json(name = "AirportCode")
+            @SerializedName(value = "AirportCode")
             val airportCode: String,
-            @Json(name = "Position")
+            @SerializedName(value = "Position")
             val position: PositionModel,
-            @Json(name = "CityCode")
+            @SerializedName(value = "CityCode")
             val cityCode: String,
-            @Json(name = "CountryCode")
+            @SerializedName(value = "CountryCode")
             val countryCode: String,
-            @Json(name = "LocationType")
+            @SerializedName(value = "LocationType")
             val locationType: String,
-            @Json(name = "Names")
+            @SerializedName(value = "Names")
             val names: @RawValue Map<String, Any?>,
-            //val names: NamesModel.Names,
-            @Json(name = "UtcOffset")
+            //val values: NamesModel.Names,
+            @SerializedName(value = "UtcOffset")
             val utcOffset: Double,
-            @Json(name = "TimeZoneId")
+            @SerializedName(value = "TimeZoneId")
             val timeZoneId: String) : Parcelable
 
-    data class Airports(@Json(name = "Airport")val airports: List<Airport>)
+
+    data class Airports(@SerializedName(value = "Airport") val airports: List<Airport>)
 }

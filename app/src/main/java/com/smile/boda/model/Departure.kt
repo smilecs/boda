@@ -1,8 +1,8 @@
 package com.smile.boda.model
 
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
 
-data class Departure(@Json(name = "AirportCode")
+data class Departure(@SerializedName(value = "AirportCode")
                      val airportCode: String,
-                     @Json(name = "ScheduledTimeLocal")
+                     @SerializedName(value = "ScheduledTimeLocal")
                      val scheduledTimeLocal: TimeLocal)

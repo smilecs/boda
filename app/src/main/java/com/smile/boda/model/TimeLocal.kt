@@ -1,6 +1,6 @@
 package com.smile.boda.model
 
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
 
-data class TimeLocal(@Json(name = "DateTime")
+data class TimeLocal(@SerializedName(value = "DateTime")
                      val dateTime:String)

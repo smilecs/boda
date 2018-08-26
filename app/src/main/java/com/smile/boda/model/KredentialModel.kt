@@ -1,7 +1,7 @@
 package com.smile.boda.model
 
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
 
-data class KredentialModel(@Json(name = "access_token") val token: String,
-                           @Json(name = "token_type") val type: String,
-                           @Json(name = "expires_in") val expiry: Long)
+data class KredentialModel(@SerializedName(value = "access_token") val token: String,
+                           @SerializedName(value = "token_type") val type: String,
+                           @SerializedName(value = "expires_in") val expiry: Long)

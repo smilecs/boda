@@ -3,20 +3,26 @@ package com.smile.boda.ui.fragment
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.past3.ketro.api.ApiErrorHandler
 import com.past3.ketro.api.Kobserver
 import com.smile.boda.R
 import com.smile.boda.api.response.ScheduleResp
 import com.smile.boda.ui.MainViewModel
 import com.smile.boda.ui.activity.MainActivity
-import com.smile.boda.ui.adapter.ScheduleAdapter
+import com.smile.boda.ui.activity.MapsActivity
+import com.smile.boda.ui.adapter.TopScheduleAdapter
 import com.smile.boda.ui.util.Util
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlin.properties.Delegates
 
 /**
  * A simple [Fragment] subclass.
@@ -24,12 +30,13 @@ import kotlinx.android.synthetic.main.fragment_main.*
  */
 
 
-class MainFragment : AuthFragment(), ScheduleAdapter.Companion.ScheduleListener {
+class MainFragment : AuthFragment(), TopScheduleAdapter.Companion.ScheduleListener {
+    private var viewModel: MainViewModel by Delegates.notNull()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        val viewModel = ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
+        viewModel = ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
         authUser(viewModel)
         observeAirportsData(viewModel)
         observeScheduleList(viewModel)
@@ -57,6 +64,9 @@ class MainFragment : AuthFragment(), ScheduleAdapter.Companion.ScheduleListener 
                 airportListFragment.reqCode = MainActivity.ORIGIN_REQ_CODE
                 replace(R.id.container, airportListFragment)
             }?.commit()
+        }
+        refresh.setOnClickListener {
+            viewModel.getSchedule()
         }
     }
 
@@ -93,29 +103,38 @@ class MainFragment : AuthFragment(), ScheduleAdapter.Companion.ScheduleListener 
         mainViewModel.scheduleLiveData.observe(this, object : Kobserver<ScheduleResp>() {
             override fun onException(exception: Exception) {
                 toggleSchView(false)
+                if(exception is Resources.NotFoundException){
+                    refresh.visibility = View.GONE
+                }
                 errorText.text = exception.message
             }
 
             override fun onSuccess(data: ScheduleResp) {
                 toggleSchView(true)
-                container.adapter = ScheduleAdapter(data.scheduleResource.schedule[0].flight,
+                container.adapter = TopScheduleAdapter(data.scheduleResource.schedule,
                         this@MainFragment)
             }
         })
     }
 
-    private fun toggleSchView(show:Boolean){
-        if(show){
+    private fun toggleSchView(show: Boolean) {
+        if (show) {
             container.visibility = View.VISIBLE
             errorText.visibility = View.GONE
+            refresh.visibility = View.GONE
 
-        }else{
+        } else {
             container.visibility = View.GONE
             errorText.visibility = View.VISIBLE
+            refresh.visibility = View.VISIBLE
         }
         progressBar.visibility = View.GONE
     }
-    override fun onSelected() {
 
+    override fun onSelected() {
+        val intent = Intent(context, MapsActivity::class.java)
+        intent.putExtra("origin", viewModel.originModel?.position?.coordinate)
+        intent.putExtra("dest", viewModel.destModel?.position?.coordinate)
+        startActivity(intent)
     }
 }

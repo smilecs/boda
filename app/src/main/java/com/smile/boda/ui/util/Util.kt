@@ -16,5 +16,7 @@ object Util {
                 name as Map<String, String>
             }?.get(key)
 
-    fun dateFormat() = SimpleDateFormat("YYYY-MM-dd", Locale.US)
+    fun dateFormat() = SimpleDateFormat.getDateInstance()
+
+    fun dateForServer() = SimpleDateFormat("YYYY-MM-dd", Locale.US)
 }

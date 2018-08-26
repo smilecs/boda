@@ -1,6 +1,6 @@
 package com.smile.boda.model
 
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
 
-data class TotalJourney(@Json(name = "Duration")
+data class TotalJourney(@SerializedName(value = "Duration")
                         val duration:String)

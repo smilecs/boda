@@ -8,6 +8,7 @@ class ApiException : ApiErrorHandler(){
         return when (response.code()) {
             LOGIN_ERROR -> LoginException()
             NOT_FOUND -> NotFoundException()
+            BAD_REQUEST -> BadRequestException()
             else -> Exception("Unknown error")
         }
     }
@@ -15,6 +16,7 @@ class ApiException : ApiErrorHandler(){
     companion object ErrorConfig {
         const val LOGIN_ERROR = 401
         const val NOT_FOUND = 404
+        const val BAD_REQUEST = 400
 
         class LoginException : Exception() {
             override val message = "Error unauthorised user"
@@ -22,6 +24,10 @@ class ApiException : ApiErrorHandler(){
 
         class NotFoundException : Exception(){
             override val message = "No flight matched the criteria."
+        }
+
+        class BadRequestException : Exception(){
+            override val message = "Bad request"
         }
     }
 }

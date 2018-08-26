@@ -42,6 +42,8 @@ class AirportListFragment : AuthFragment(), AirportAdapter.Companion.AirportSele
         initUi(mainViewModel)
         observeListData(mainViewModel)
         if (mainViewModel.airportList.isEmpty()) {
+            progressBar.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
             getData(mainViewModel)
         }
     }
@@ -67,6 +69,7 @@ class AirportListFragment : AuthFragment(), AirportAdapter.Companion.AirportSele
                 count?.let {
                     if (it > totalItemsCount) {
                         offset = totalItemsCount
+                        progressBar.visibility = View.VISIBLE
                         getData(mainViewModel, totalItemsCount)
                     }
                 }
@@ -80,6 +83,9 @@ class AirportListFragment : AuthFragment(), AirportAdapter.Companion.AirportSele
                 }
 
                 override fun onSuccess(data: AirportResp) {
+                    recyclerView.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
+                    count = data.airportResource.meta.totalCount
                     mainViewModel.airportList.addAll(data.airportResource.airports.airports)
                     airportAdapter.notifyDataSetChanged()
                 }

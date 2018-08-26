@@ -1,6 +1,7 @@
 package com.smile.boda.model
 
-import com.squareup.moshi.Json
+import com.google.gson.annotations.SerializedName
+import com.smile.boda.api.response.Meta
 
-data class AirportResource(@Json(name = "Airports")
-                           val airports: AirportModel.Airports)
+data class AirportResource(@SerializedName(value = "Airports")
+                           val airports: AirportModel.Airports, @SerializedName(value = "Meta") val meta: Meta)
