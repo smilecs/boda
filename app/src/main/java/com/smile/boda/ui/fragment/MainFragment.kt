@@ -1,20 +1,20 @@
 package com.smile.boda.ui.fragment
 
 
-import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.past3.ketro.api.Kobserver
 import com.smile.boda.R
-import com.smile.boda.model.AirportModel
+import com.smile.boda.api.response.ScheduleResp
 import com.smile.boda.ui.MainViewModel
-import com.smile.boda.ui.activity.AirportListActivity
 import com.smile.boda.ui.activity.MainActivity
+import com.smile.boda.ui.adapter.ScheduleAdapter
 import com.smile.boda.ui.util.Util
 import kotlinx.android.synthetic.main.fragment_main.*
 
@@ -22,10 +22,9 @@ import kotlinx.android.synthetic.main.fragment_main.*
  * A simple [Fragment] subclass.
  *
  */
-private const val ORIGIN_REQ_CODE = 110
-private const val DEST_REQ_CODE = 120
 
-class MainFragment : AuthFragment() {
+
+class MainFragment : AuthFragment(), ScheduleAdapter.Companion.ScheduleListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -33,13 +32,17 @@ class MainFragment : AuthFragment() {
         val viewModel = ViewModelProviders.of(requireActivity()).get(MainViewModel::class.java)
         authUser(viewModel)
         observeAirportsData(viewModel)
+        observeScheduleList(viewModel)
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val intent = Intent(context, AirportListActivity::class.java)
         val airportListFragment = AirportListFragment()
+        container.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+        }
         selectDestination.setOnClickListener {
 
             fragmentManager?.beginTransaction()?.apply {
@@ -47,7 +50,6 @@ class MainFragment : AuthFragment() {
                 airportListFragment.reqCode = MainActivity.DEST_REQ_CODE
                 replace(R.id.container, airportListFragment)
             }?.commit()
-            //startActivityForResult(intent, DEST_REQ_CODE)
         }
         selectOrigin.setOnClickListener {
             fragmentManager?.beginTransaction()?.apply {
@@ -55,7 +57,6 @@ class MainFragment : AuthFragment() {
                 airportListFragment.reqCode = MainActivity.ORIGIN_REQ_CODE
                 replace(R.id.container, airportListFragment)
             }?.commit()
-            //startActivityForResult(intent, ORIGIN_REQ_CODE)
         }
     }
 
@@ -67,6 +68,8 @@ class MainFragment : AuthFragment() {
                 destinationText.text = infoText
                 viewModel.destModel = airport
             }
+            showSchedule(viewModel
+            )
         })
         viewModel.originAirport.observe(this, Observer { airport ->
             airport?.let {
@@ -75,22 +78,44 @@ class MainFragment : AuthFragment() {
                 originText.text = infoText
                 viewModel.originModel = airport
             }
+            showSchedule(viewModel)
         })
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (Activity.RESULT_OK == resultCode) {
-            val airportModel: AirportModel.Airport? = data?.getParcelableExtra(AirportListFragment.AIRPORT_DATA)
-            airportModel?.let {
-                val nameFromList = Util.getTextFromAny(it.names["Name"])
-                val infoText = getString(R.string.airport_caption, nameFromList, airportModel?.airportCode)
-                if (requestCode == ORIGIN_REQ_CODE) {
-                    originText.text = infoText
-                } else {
-                    destinationText.text = infoText
-                }
-            }
+    private fun showSchedule(mainViewModel: MainViewModel) {
+        if (mainViewModel.destModel != null && mainViewModel.originModel != null) {
+            progressBar.visibility = View.VISIBLE
+            mainViewModel.getSchedule()
         }
+    }
+
+    private fun observeScheduleList(mainViewModel: MainViewModel) {
+        mainViewModel.scheduleLiveData.observe(this, object : Kobserver<ScheduleResp>() {
+            override fun onException(exception: Exception) {
+                toggleSchView(false)
+                errorText.text = exception.message
+            }
+
+            override fun onSuccess(data: ScheduleResp) {
+                toggleSchView(true)
+                container.adapter = ScheduleAdapter(data.scheduleResource.schedule[0].flight,
+                        this@MainFragment)
+            }
+        })
+    }
+
+    private fun toggleSchView(show:Boolean){
+        if(show){
+            container.visibility = View.VISIBLE
+            errorText.visibility = View.GONE
+
+        }else{
+            container.visibility = View.GONE
+            errorText.visibility = View.VISIBLE
+        }
+        progressBar.visibility = View.GONE
+    }
+    override fun onSelected() {
+
     }
 }

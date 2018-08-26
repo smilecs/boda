@@ -16,5 +16,5 @@ object Util {
                 name as Map<String, String>
             }?.get(key)
 
-    fun dateFormat() = SimpleDateFormat("YYYY-MM-DDTHH:mm", Locale.getDefault())
+    fun dateFormat() = SimpleDateFormat("YYYY-MM-dd", Locale.US)
 }
