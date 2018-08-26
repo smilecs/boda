@@ -37,7 +37,10 @@ abstract class AuthFragment : Fragment() {
                     onAuth()
                 }
             })
+            return
         }
+        mainViewModel.airportList.clear()
+        mainViewModel.getAirports()
     }
 
     open fun onAuth() {}

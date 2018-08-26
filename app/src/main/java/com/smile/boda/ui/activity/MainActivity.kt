@@ -14,4 +14,9 @@ class MainActivity : AppCompatActivity() {
             replace(R.id.container, MainFragment())
         }.commit()
     }
+
+    companion object {
+        const val ORIGIN_REQ_CODE = 110
+        const val DEST_REQ_CODE = 120
+    }
 }

@@ -12,7 +12,7 @@ class AirportRequest(val offset: Int) : GenericRequestHandler<AirportResp>() {
     private val limit = 2
 
     override fun makeRequest(): Call<AirportResp> {
-        return NetModule.provideRetrofit().create(BodaService::class.java).getAirports(limit, 77)
+        return NetModule.provideRetrofit().create(BodaService::class.java).getAirports(limit, offset)
     }
 
     override val errorHandler: ApiErrorHandler = ApiException()

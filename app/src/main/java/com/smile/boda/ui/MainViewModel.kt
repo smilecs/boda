@@ -13,6 +13,10 @@ import com.smile.boda.model.KredentialModel
 class MainViewModel : ViewModel() {
     private val airportLiveData = MutableLiveData<Wrapper<AirportResp>>()
     val airportList = mutableListOf<AirportModel.Airport>()
+    val originAirport = MutableLiveData<AirportModel.Airport>()
+    val destAirtport = MutableLiveData<AirportModel.Airport>()
+    var originModel: AirportModel.Airport? = null
+    var destModel: AirportModel.Airport? = null
 
     fun authUser(): LiveData<Wrapper<KredentialModel>> {
         return AuthRequest().doRequest()

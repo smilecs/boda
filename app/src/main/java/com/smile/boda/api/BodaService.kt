@@ -18,4 +18,7 @@ interface BodaService {
     @GET(Urls.AIRPORT_ROUTE)
     fun getAirports(@Query("limit") limit: Int, @Query("offset") offset: Int):Call<AirportResp>
 
+    @GET(Urls.SCHEDULE)
+    fun getSchedule(@Path("origin") origin:String, @Path("destination") dest:String, @Path("fromDateTime") date:String)
+
 }
